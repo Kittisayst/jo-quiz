@@ -37,6 +37,7 @@ export default function StudentDashboard() {
         studentName,
         answers,
         score,
+        history,
         startExam,
         setAnswer,
         nextQuestion,
@@ -122,9 +123,17 @@ export default function StudentDashboard() {
                             </form>
                         </Form>
                     </CardContent>
-                    <CardFooter className="justify-center">
+                    <CardFooter className="flex-col gap-2 justify-center">
                         <Button variant="link" onClick={handleLogout}>
                             ອອກຈາກລະບົບ
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-muted-foreground"
+                            onClick={() => (window.location.href = "/teacher")}
+                        >
+                            ໄປໜ້າອາຈານ (Teacher) 👨‍🏫
                         </Button>
                     </CardFooter>
                 </Card>
@@ -245,6 +254,11 @@ export default function StudentDashboard() {
         const totalQuestions = currentExam.questions.length;
         const percentage = Math.round((score / totalQuestions) * 100);
 
+        // Calculate attempt count for this student
+        const attemptCount = history.filter(
+            (h) => h.studentName === studentName
+        ).length;
+
         return (
             <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
                 <Card className="w-full max-w-md text-center">
@@ -253,6 +267,9 @@ export default function StudentDashboard() {
                             ຜົນການສອບເສັງ
                         </CardTitle>
                         <CardDescription>{studentName}</CardDescription>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            ສອບເສັງຄັ້ງທີ {attemptCount}
+                        </p>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="text-6xl font-extrabold text-primary">

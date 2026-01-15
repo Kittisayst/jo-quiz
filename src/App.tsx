@@ -36,12 +36,12 @@ function App() {
 
                     <Route path="login" element={<LoginPage />} />
 
-                    {/* Teacher Routes - Keep protected for later */}
-                    <Route
+                    {/* Teacher Routes - Bypassed protection for testing */}
+                    {/* <Route
                         element={<ProtectedRoute allowedRoles={["teacher"]} />}
-                    >
-                        <Route path="teacher" element={<TeacherDashboard />} />
-                    </Route>
+                    > */}
+                    <Route path="teacher" element={<TeacherDashboard />} />
+                    {/* </Route> */}
 
                     {/* Student Routes - Also accessible via direct link */}
                     <Route path="student" element={<StudentDashboard />} />

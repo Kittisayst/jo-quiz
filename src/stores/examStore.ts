@@ -22,17 +22,42 @@ export const useExamStore = create<ExamState>()(
             studentName: "",
             answers: {},
             score: 0,
+            history: [],
             status: "not-started", // Initial status remains "not-started"
             currentExam: MOCK_EXAM, // In real app, this would be fetched
             currentQuestionIndex: 0,
 
             startExam: (studentName: string) => {
+                // Fisher-Yates Shuffle Utility
+                const shuffle = <T>(array: T[]): T[] => {
+                    const newArray = [...array];
+                    for (let i = newArray.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                    }
+                    return newArray;
+                };
+
+                // Clone and shuffle questions
+                const shuffledQuestions = shuffle(MOCK_EXAM.questions).map((q) => {
+                    // Also shuffle choices if they exist (only for multiple-choice, let true/false stay sorted or not?)
+                    // Let's shuffle multiple-choice choices only to keep True/False natural (True/False usually standard order)
+                    // But user request implies preventing copying, so shuffling multiple choice options is good.
+                    if (q.type === "multiple-choice" && q.choices) {
+                        return { ...q, choices: shuffle(q.choices) };
+                    }
+                    return q;
+                });
+
+                const shuffledExam = { ...MOCK_EXAM, questions: shuffledQuestions };
+
                 set({
                     studentName,
                     status: "in-progress",
                     answers: {},
                     score: 0,
                     currentQuestionIndex: 0,
+                    currentExam: shuffledExam, // Use the shuffled version
                 });
             },
 
@@ -78,7 +103,20 @@ export const useExamStore = create<ExamState>()(
                     }
                 });
 
-                set({ status: "completed", score });
+                const newResult = {
+                    examId: state.currentExam.id,
+                    studentName: state.studentName,
+                    score,
+                    totalQuestions: state.currentExam.questions.length,
+                    timestamp: new Date().toISOString(),
+                    answers: state.answers,
+                };
+
+                set((state) => ({
+                    status: "completed",
+                    score,
+                    history: [...state.history, newResult],
+                }));
             },
 
             startReview: () => {
