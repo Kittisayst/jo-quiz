@@ -12,4 +12,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  base: "/jo-quiz/", // Assumed repo name
 })
