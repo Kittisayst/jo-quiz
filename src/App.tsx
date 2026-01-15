@@ -28,7 +28,7 @@ import StudentDashboard from "@/pages/Student";
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Routes>
                 <Route path="/" element={<Layout />}>
                     {/* Default to Student Dashboard for bypass mode */}
